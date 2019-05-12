@@ -3,5 +3,5 @@
 import cv2
 
 #This function is a stubble. To be implemented
-def get_features(img):
+def center(img):
     return []

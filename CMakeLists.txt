@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   sensor_msgs
+  cv_bridge
 )
 find_package(OpenCV 3 REQUIRED)
 
