@@ -7,7 +7,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 import h_detect
 from cv_bridge import CvBridge, CvBridgeError
-from math import pow
+from math import pow, atan2, sin, cos
 
 
 z = 0
@@ -25,29 +25,34 @@ kp = 1
 kd = 0
 ki = 0
 
+tans = 0
+
 frame = 0
 
 bridge = CvBridge()
 
 new_resp = False
 resp = 0
+
 def processimg(img):
     try:
-      img = bridge.imgmsg_to_cv2(img, "bgr8")
+        img = bridge.imgmsg_to_cv2(img, "bgr8")
     except CvBridgeError as e:
-      print(e)
+        print(e)
     cv2.imshow(img.data)      
     cx, cy = h_detect.center(img)
     if frame!=0:
         p_prev_error = p_error
-    ex = abs(cx - img.width//2)
-    ey = abs(cy - img.height//2)
+    ex = (cx - img.width//2)
+    ey = (cy - img.height//2)
+    tans = atan2(ey,ex)
     p_error = pow(pow(ex,2)+pow(ey,2), 0.5)
     i_error += p_error
     if frame!=0:
         d_error = (p_error-p_prev_error)
     resp = kp*p_error + kd*d_error + ki*i_error
     new_resp = True
+    frame=1
 
 
 def listener():    
@@ -62,8 +67,12 @@ def listener():
 
     rate = rospy.Rate(50)
     while not rospy.is_shutdown():
-
-        pub.publish(hello_str)
+        if new_resp:
+            new_resp=False
+            rot = Twist()
+            rot.linear.x = cos(tans)*resp
+            rot.linear.y = sin(tans)*resp
+            pub.publish(rot)
         rate.sleep()
 
 
