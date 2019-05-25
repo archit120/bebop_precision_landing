@@ -2,21 +2,25 @@ cmake_minimum_required(VERSION 2.8.3)
 project(bebop_precision_landing)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   rospy
   std_msgs
   message_generation
   geometry_msgs
   nav_msgs
   sensor_msgs
+  image_transport
   cv_bridge
 )
 find_package(OpenCV 3 REQUIRED)
+find_package(Eigen3 REQUIRED)
+include_directories(${Eigen_INCLUDE_DIRS})
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -113,7 +117,7 @@ generate_messages(
 catkin_package(
   #INCLUDE_DIRS include
   #LIBRARIES bebop_precision_landing
-  CATKIN_DEPENDS rospy std_msgs geometry_msgs nav_msgs sensor_msgs
+  CATKIN_DEPENDS rospy roscpp std_msgs geometry_msgs nav_msgs sensor_msgs
   #DEPENDS system_lib
 )
 
@@ -129,10 +133,6 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/bebop_precision_landing.cpp
-# )
-
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -141,8 +141,10 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/bebop_precision_landing_node.cpp)
-
+add_executable(ibvs_test src/detect.cpp src/helpers.cpp src/point_detect.cpp src/track.cpp src/ibvs.cpp src/point_detect.cpp src/ros.cpp)
+target_link_libraries(ibvs_test ${catkin_LIBRARIES})
+target_link_libraries(ibvs_test ${OpenCV_LIBRARIES})
+target_link_libraries(ibvs_test ${Eigen3_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

@@ -67,6 +67,8 @@
   <exec_depend>nav_msgs</exec_depend>  
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  <build_depend>eigen</build_depend>
+
 
 
 
