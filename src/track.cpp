@@ -2,6 +2,7 @@
 #include "helpers.h"
 #include "detect.h"
 #include "ros.h"
+#include "ibvs.h"
 #include "point_detect.h"
 
 bool track(Mat initframe, Rect &r)
@@ -105,10 +106,11 @@ bool track(Mat initframe, Rect &r)
 			std::string s(ss.str());
 			points[i].x = points[i].x * width / 228.0;
 			points[i].y = points[i].y * height / 228.0;
+			points[i]+=initial;
+			//cout << i << " " << (int) points[i].x<< " " << (int)points[i].y << "\n";
+			putText(frame, s.c_str(), points[i] , font, 1, (255, 255, 255), 2);
 
-			putText(frame, s.c_str(), points[i] + initial, font, 1, (255, 255, 255), 2);
-
-			circle(frame, points[i] + initial, radius * 48 / (i + 24), Scalar(255, 0, 0), FILLED);
+			circle(frame, points[i] , radius * 48 / (i + 24), Scalar(255, 0, 0), FILLED);
 		}
 
 		Point2d centroid(bbox.x + centroids.at<double>(maxl, 0), bbox.y + centroids.at<double>(maxl, 1));
@@ -117,9 +119,14 @@ bool track(Mat initframe, Rect &r)
 		circle(frame, centroid, 3, Scalar(0, 255, 0), -1, 8, 0);
 
 		rectangle(frame, roi, Scalar(255, 0, 0), 2, 1);
+		MatrixXf v = get_velocity_ibvs(points);
+		if(v.norm() < 0.01 ){	cout << "IBVS FINISHED\n";	break;	}
+		publish_vel(v);
 		imshow("tracker", frame);
 		if (waitKey(1) == 27)
 			break;
+		//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
 		frame = get_new_frame();
 	}
 	return 1;

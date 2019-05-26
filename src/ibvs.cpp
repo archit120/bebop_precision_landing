@@ -2,24 +2,24 @@
 #include <iostream>
 #include "helpers.h"
 #include "ibvs.h"
+#include <eigen3/Eigen/SVD>
 
+#include <eigen3/Eigen/src/QR/CompleteOrthogonalDecomposition.h>
 //using Eigen::completeOrthogonalDecomposition
 //sift parameters for detection(f2d)
-double cx = 0;
-double cy = 0;
-float fx = 1;
-float fy = 1;
+double cx = 427.331854;
+double cy = 240.226888;
+float fx = 537.292878;
+float fy = 527.000348;
 
 float error_threshold = 0.1;
-
+float depth = 1;
 int lambda = 1; //for setting the extra speed of camera
 
 vector<Point2d> reference;
 
-MatrixXf get_velocity(vector<Point2f> points, float depth)
+MatrixXf get_velocity_ibvs(vector<Point2f> points)
 {
-
-    int number = reference.size();
 
     MatrixXf velocity(4, 1);
     MatrixXf L1(1, 4);
@@ -61,11 +61,12 @@ MatrixXf get_velocity(vector<Point2f> points, float depth)
         L1(i + 1, 2) = y / d;
         L1(i + 1, 3) = -x;
     }
+    Eigen::CompleteOrthogonalDecomposition<MatrixXf> c(L1);
+    LInv = c.pseudoInverse();
+    
+    velocity = -LInv * (s - s_ref);
 
-    LInv = (L1.transpose() * L1).inverse() * L1.transpose();
-
-    velocity = -lambda * LInv * (s - s_ref);
-
+    cout << (s-s_ref).norm()<< " " << depth << "\n";
     cout << "ibvs out:" << velocity(0, 0) << " " << velocity(1, 0) << " " << velocity(2, 0) << " " << velocity(3, 0) << "\n";
 
     return velocity;

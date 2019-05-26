@@ -1,6 +1,6 @@
 #include "helpers.h"
 
-int thres = 100;
+int thres = 120;
 int thresh2 = 150;
 int erosion_size = 3;
 

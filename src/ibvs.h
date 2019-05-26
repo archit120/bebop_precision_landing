@@ -4,7 +4,6 @@
 #include <math.h>
 #include "helpers.h"
 
-
 using namespace cv;
 using namespace std;
 using namespace Eigen;
@@ -14,10 +13,10 @@ extern double cy;
 extern float fx;
 extern float fy;
 
+extern float depth;
 
-vector<Point2d> reference;
+extern vector<Point2d> reference;
 
-MatrixXf get_velocity(vector<Point2f> points, float depth);
-
+MatrixXf get_velocity_ibvs(vector<Point2f> points);
 
 #endif

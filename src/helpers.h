@@ -25,6 +25,8 @@
 
 using namespace std;
 using namespace cv;
+using namespace Eigen;
+
 
 extern int thres;
 extern int thresh2;
