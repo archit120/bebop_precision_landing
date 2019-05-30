@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 
-bool track(Mat initframe, Rect &r);
+bool track(Mat initframe, Rect &r, bool);
 
 
 #endif

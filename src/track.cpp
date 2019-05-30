@@ -5,7 +5,7 @@
 #include "ibvs.h"
 #include "point_detect.h"
 
-bool track(Mat initframe, Rect &r)
+bool track(Mat initframe, Rect &r, bool servo)
 {
 	Ptr<Tracker> tracker = TrackerMedianFlow::create();
 	Rect2d roi = r;
@@ -90,7 +90,7 @@ bool track(Mat initframe, Rect &r)
 		imshow("crop", crop);
 
 		auto points = get_ordered_points(fout, centroid2);
-		if(points.size()!=12)
+		if (points.size() != 12)
 		{
 			cout << "Insufficient points\n";
 			frame = get_new_frame();
@@ -106,11 +106,11 @@ bool track(Mat initframe, Rect &r)
 			std::string s(ss.str());
 			points[i].x = points[i].x * width / 228.0;
 			points[i].y = points[i].y * height / 228.0;
-			points[i]+=initial;
+			points[i] += initial;
 			//cout << i << " " << (int) points[i].x<< " " << (int)points[i].y << "\n";
-			putText(frame, s.c_str(), points[i] , font, 1, (255, 255, 255), 2);
+			putText(frame, s.c_str(), points[i], font, 1, (255, 255, 255), 2);
 
-			circle(frame, points[i] , radius * 48 / (i + 24), Scalar(255, 0, 0), FILLED);
+			circle(frame, points[i], radius * 48 / (i + 24), Scalar(255, 0, 0), FILLED);
 		}
 
 		Point2d centroid(bbox.x + centroids.at<double>(maxl, 0), bbox.y + centroids.at<double>(maxl, 1));
@@ -119,9 +119,25 @@ bool track(Mat initframe, Rect &r)
 		circle(frame, centroid, 3, Scalar(0, 255, 0), -1, 8, 0);
 
 		rectangle(frame, roi, Scalar(255, 0, 0), 2, 1);
-		MatrixXf v = get_velocity_ibvs(points);
-		if(v.norm() < 0.01 ){	cout << "IBVS FINISHED\n";	break;	}
-		publish_vel(v);
+		if (servo)
+		{
+			MatrixXf v = get_velocity_ibvs(points);
+			if (v.norm() < 0.01)
+			{
+				cout << "IBVS FINISHED\n";
+				break;
+			}
+			publish_vel(v);
+		}
+		else
+		{
+			cout << "\nCurrent points are: \n";
+			for (int i = 0; i < points.size(); i++)
+			{
+				cout << i << " "<< points[i].x << " " << points[i].y << "\n";
+			}
+			cout << "\n";
+		}
 		imshow("tracker", frame);
 		if (waitKey(1) == 27)
 			break;

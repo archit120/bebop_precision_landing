@@ -3,7 +3,7 @@
 #include "ros.h"
 #include "helpers.h"
 
-int startDetect()
+int startDetect(bool servo)
 {
 
 	namedWindow("HoughCircles", WINDOW_NORMAL);
@@ -167,7 +167,7 @@ int startDetect()
 
 			cout << "Helipad detected! Starting track \n";
 
-			if (!track(img, bbox))
+			if (!track(img, bbox, servo))
 				cout << "Tracking lost! Restarting detection process. \n\n\n\n";
 		}
 

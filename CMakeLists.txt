@@ -142,9 +142,13 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(ibvs_test src/detect.cpp src/helpers.cpp src/point_detect.cpp src/track.cpp src/ibvs.cpp src/point_detect.cpp src/ros.cpp)
+add_executable(ibvs_point src/detect.cpp src/helpers.cpp src/point_detect.cpp src/track.cpp src/ibvs.cpp src/point_detect.cpp src/point.cpp)
 target_link_libraries(ibvs_test ${catkin_LIBRARIES})
 target_link_libraries(ibvs_test ${OpenCV_LIBRARIES})
 target_link_libraries(ibvs_test ${Eigen3_LIBRARIES})
+target_link_libraries(ibvs_point ${catkin_LIBRARIES})
+target_link_libraries(ibvs_point ${OpenCV_LIBRARIES})
+target_link_libraries(ibvs_point ${Eigen3_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

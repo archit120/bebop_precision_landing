@@ -17,6 +17,8 @@ extern float depth;
 
 extern vector<Point2d> reference;
 
+extern void rqt_plot(float);
+
 MatrixXf get_velocity_ibvs(vector<Point2f> points);
 
 #endif

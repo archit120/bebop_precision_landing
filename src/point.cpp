@@ -36,7 +36,7 @@ void rqt_plot(float s_norm)
         cout << "Landinggggggg!";
         land.publish(std_msgs::Empty());
     }
-    rqt.publish(sf);
+  //  rqt.publish(sf);
 }
 
 void publish_vel(MatrixXf vel)
@@ -48,7 +48,7 @@ void publish_vel(MatrixXf vel)
     geometry_msgs::Vector3 m;
     geometry_msgs::Vector3 s;
     s.x=s.z=s.y=0;
-    float cap = 0.06;
+    float cap = 0.1 * depth*depth;
     m.x = -vel(1,0);
     m.y = -vel(0,0);
     m.z = -vel(2,0);
@@ -61,7 +61,7 @@ void publish_vel(MatrixXf vel)
 
     rot.linear = m;
     rot.angular = s;
-    motion.publish(rot);
+    //motion.publish(rot);
 }
 
 Mat get_new_frame()
@@ -83,18 +83,6 @@ int main(int argc, char **argv)
 {
     //VideoCapture Video(1);
     int counter = 0;
-    reference.push_back(Point2d(320, 119));
-    reference.push_back(Point2d(497, 117));
-    reference.push_back(Point2d(500, 332));
-    reference.push_back(Point2d(312, 332));
-    reference.push_back(Point2d(365, 117));
-    reference.push_back(Point2d(450, 117));
-    reference.push_back(Point2d(450, 334));
-    reference.push_back(Point2d(360, 332));
-    reference.push_back(Point2d(436, 191));
-    reference.push_back(Point2d(436, 259));
-    reference.push_back(Point2d(377, 259));
-    reference.push_back(Point2d(380, 191));
     cout << "start\n";
     ros::init(argc, argv, "precision_landing");
     ros::NodeHandle nh;
@@ -104,7 +92,7 @@ int main(int argc, char **argv)
     motion = nh.advertise<geometry_msgs::Twist>("/bebop/cmd_vel", 1);
     rqt = nh.advertise<std_msgs::Float32>("plot", 10);
     land = nh.advertise<std_msgs::Empty>("/bebop/land", 10);
-    startDetect(true);
+    startDetect(false);
 
     ros::spin();
     return 0;

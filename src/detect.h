@@ -7,7 +7,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/tracking/tracker.hpp>
 
-int startDetect();
+int startDetect(bool);
 
 
 #endif
