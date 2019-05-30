@@ -6,7 +6,11 @@ Required libraries are OpenCV 3 with contrib modules and Eigen 3.3+
 
 The camera callibration parameters are saved in src/ibvs.cpp
 
-To use, clone this repo into your ros workspace src folder and then run "catkin_make" or "catkin build"
+To use, clone this repo into your ros workspace src folder and then run "catkin_make" or "catkin build".
+
+Before starting the visual servoying, you will have to connect to the bebop driver, also will have to takeoff the drone. Also, make sure that your camera is facing downwards using the command : 
+
+rostopic pub ---once bebop/camera_control geometry_msgs/Twist "{angular: [0,-90,0]}"
 
 After this, launch using "rosrun bebop_precision_landing ibvs_test" to start the visual servoing process.
 
